@@ -4,3 +4,9 @@ language: java
 
 script:
   - mvn clean install -U -B
+
+deploy:
+  provider: script
+  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push andymacdonald/clusterf-chaos-proxy:latest
+  on:
+    branch: master

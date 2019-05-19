@@ -19,7 +19,7 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <docker.image.prefix>clusterf</docker.image.prefix>
+        <docker.image.prefix>andymacdonald</docker.image.prefix>
     </properties>
 
     <dependencies>
