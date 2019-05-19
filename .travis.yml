@@ -3,10 +3,10 @@ sudo: false
 language: java
 
 script:
-  - mvn clean install -U -B
+  - mvn clean install -U -B -q
 
 deploy:
   provider: script
-  script: mvn clean install -DskipTests && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push andymacdonald/clusterf-chaos-proxy:latest
+  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && mvn docker:build && mvn docker:push
   on:
     branch: master
