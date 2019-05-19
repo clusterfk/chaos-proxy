@@ -27,6 +27,10 @@ Use this information to configure your _service-under-test_ with relevant config
 ### Example ###
 For example, you might configure your _service-under-test_ to point to an image service which has been _"ClusterF***'d"_ like so:
 
+**Service Under Test Example Configuration**
+
+If you configure your _service-under-test_ with properties files, they might change like so:
+
 ```properties
 image.service=http://10.0.1.150:9898/image-service
 ```
@@ -36,7 +40,9 @@ Becomes:
 image.service=http://localhost:8080/image-service
 ```
 
-Specify application.properties to point to your real destination service - e.g.:
+**ClusterF\*** Application Configuration**
+
+Within ClusterF***, specify `application.properties` to point to your real destination service - e.g.:
 
 ```properties
 destination.hostProtocolAndPort=http://10.0.1.150:9898
