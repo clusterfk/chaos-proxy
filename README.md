@@ -1,4 +1,4 @@
-# ClusterF*** - Chaos Proxy # [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
+# ClusterF*** - Chaos Proxy [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
 
 ClusterF*** is a lightweight tool designed for chaos testing of microservices. 
 
