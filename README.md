@@ -58,17 +58,16 @@ destination.hostProtocolAndPort=http://10.0.1.150:9898
 
 Specify your chaos strategy:
 
+<pre><code><b>NO_CHAOS</b> - Request is simply passed through
 
-**NO_CHAOS** - `Request is simply passed through`
+<b>DELAY_RESPONSE</b> - Requests are delayed but successful (configurable delay)
 
-**DELAY_RESPONSE** - `Requests are delayed but successful (configurable delay)`
+<b>INTERNAL_SERVER_ERROR</b> - Requests return with 500 INTERNAL SERVER ERROR
 
-**INTERNAL_SERVER_ERROR** - `Requests return with 500 INTERNAL SERVER ERROR`
+<b>BAD_REQUEST</b> - Requests return with 400 BAD REQUEST
 
-**BAD_REQUEST** - `Requests return with 400 BAD REQUEST`
-
-**RANDOM_HAVOC** - `Requests generally succeed, but randomly fail with random HTTP status codes and random delays`
-
+<b>RANDOM_HAVOC</b> - Requests generally succeed, but randomly fail with random HTTP status codes and random delays
+</code></pre>
 
 Within your `application.properties`:
 
