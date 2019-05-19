@@ -40,7 +40,7 @@ Becomes:
 image.service=http://localhost:8080/image-service
 ```
 
-**ClusterF\*** Application Configuration**
+**Chaos Proxy Application Configuration**
 
 Within ClusterF***, specify `application.properties` to point to your real destination service - e.g.:
 
