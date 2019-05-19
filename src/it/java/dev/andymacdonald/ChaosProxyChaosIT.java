@@ -96,14 +96,4 @@ public class ChaosProxyChaosIT
         verify(mockDelayService).delay(anyLong());
     }
 
-    @Test
-    public void chaosProxy_withRequestAndRandomHavocResponseStrategy_delegatesToDelayServiceThenReturnsResponse() throws Exception
-    {
-        chaosService.setActiveChaosStrategy(ChaosStrategy.RANDOM_HAVOC);
-        doNothing().when(mockDelayService).delay(anyLong());
-        stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlMatching("/")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "text/xml").withBody("<response>Content</response>")));
-        this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().is(chaosService.getChaosStatusCode()));
-        verify(mockDelayService).delay(anyLong());
-    }
-
 }
