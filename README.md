@@ -2,7 +2,7 @@
 # ClusterF*** Chaos Proxy
 [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
 
-ClusterF** Chaos Proxy is an unreliable HTTP forward proxy; a lightweight tool designed for chaos testing of microservices. 
+ClusterF** Chaos Proxy is an unreliable HTTP proxy; a lightweight tool designed for chaos testing of microservices. 
 
 ## Why Would I Need This?
 
