@@ -20,6 +20,16 @@ _You can find out how your service fairs with ClusterF***_.
 * Watch the world burn :fire: :fire: :fire:
 
 
+## Docker Image ##
+
+Pull the latest image:
+
+```sh
+docker pull andymacdonald/clusterf-chaos-proxy
+```
+
+Then follow the steps here to configure the proxy.
+
 ## Building ##
 
 * Build project and create a new docker image:
