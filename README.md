@@ -23,6 +23,8 @@ server.port=8080 #8080 is the default
 ```
 
 Use this information to configure your _service-under-test_ with relevant config for ClusterF*** in place of your _dependent-destination-service_.
+
+### Example ###
 For example, you might configure your _service-under-test_ to point to a ClusterF*** image service like so:
 
 ```properties
