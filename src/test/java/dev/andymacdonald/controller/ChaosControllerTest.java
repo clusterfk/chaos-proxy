@@ -1,7 +1,7 @@
 package dev.andymacdonald.controller;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import dev.andymacdonald.target.TargetUrlBuilder;
+import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ChaosControllerTest
     private MockMvc mockMvc;
 
     @MockBean
-    private TargetUrlBuilder mockTargetBuilder;
+    private ProxyTargetUrlBuilder mockTargetBuilder;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(WIRE_MOCK_PORT);

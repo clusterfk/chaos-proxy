@@ -3,7 +3,7 @@ package dev.andymacdonald.controller;
 
 import dev.andymacdonald.chaos.ChaosService;
 import dev.andymacdonald.io.MultipartInputStreamFileResource;
-import dev.andymacdonald.target.TargetUrlBuilder;
+import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
 import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,11 +37,11 @@ public class ChaosController
 {
 
     private final RestTemplateBuilder restTemplateBuilder;
-    private final TargetUrlBuilder targetUrlBuilder;
+    private final ProxyTargetUrlBuilder targetUrlBuilder;
     private ChaosService chaosService;
     private Logger log = LoggerFactory.getLogger(ChaosController.class);
 
-    public ChaosController(RestTemplateBuilder restTemplateBuilder, TargetUrlBuilder targetUrlBuilder, ChaosService chaosService)
+    public ChaosController(RestTemplateBuilder restTemplateBuilder, ProxyTargetUrlBuilder targetUrlBuilder, ChaosService chaosService)
     {
         this.restTemplateBuilder = restTemplateBuilder;
         this.targetUrlBuilder = targetUrlBuilder;

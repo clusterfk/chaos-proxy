@@ -5,7 +5,7 @@ import dev.andymacdonald.chaos.ChaosService;
 import dev.andymacdonald.chaos.DelayService;
 import dev.andymacdonald.chaos.strategy.ChaosStrategy;
 import dev.andymacdonald.controller.ChaosController;
-import dev.andymacdonald.target.TargetUrlBuilder;
+import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -44,7 +44,7 @@ public class ChaosProxyChaosIT
     private MockMvc mockMvc;
 
     @MockBean
-    private TargetUrlBuilder mockTargetBuilder;
+    private ProxyTargetUrlBuilder mockTargetBuilder;
 
     @MockBean
     private DelayService mockDelayService;
