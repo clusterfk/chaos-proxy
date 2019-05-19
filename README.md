@@ -1,6 +1,17 @@
-# ClusterF*** - Chaos Proxy [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
+<img src="https://i.ibb.co/WtvPm26/91a16b7b-336f-402f-a78b-d194550da559.png" alt="91a16b7b-336f-402f-a78b-d194550da559" border="0"></a><br />
+# ClusterF*** Chaos Proxy
+[![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
 
-ClusterF*** is a lightweight tool designed for chaos testing of microservices. 
+ClusterF** Chaos Proxy is an unreliable HTTP forward proxy; a lightweight tool designed for chaos testing of microservices. 
+
+## Why Would I Need This?
+
+I will let you in on a secret: **everything fails eventually**. Micro-services often communicate with other services via REST and HTTP. 
+How does your micro-service cope when the services it depends on inevitably fail?
+
+_You can find out how your service fairs with ClusterF***_.
+
+## What Do I Do? (TLDR)
 
 * Configure your locally running _service-under-test_ to point to ClusterF*** and configure ClusterF*** to point to your real running _dependent-destination-service_. 
 
@@ -42,15 +53,22 @@ Within ClusterF***, specify `application.properties` to point to your real desti
 ```properties
 destination.hostProtocolAndPort=http://10.0.1.150:9898
 ```
+
+**Chaos Strategies**
+
 Specify your chaos strategy:
 
-```
-NO_CHAOS - Request is simply passed through
-DELAY_RESPONSE - Requests are delayed but successful (configurable delay)
-INTERNAL_SERVER_ERROR - Requests return with 500 internal server error
-BAD_REQUEST - Requests return with 400 bad request status code
-RANDOM_HAVOC - Requests generally succeed, but randomly fail with random status codes and random delays
-```
+
+**NO_CHAOS** - `Request is simply passed through`
+
+**DELAY_RESPONSE** - `Requests are delayed but successful (configurable delay)`
+
+**INTERNAL_SERVER_ERROR** - `Requests return with 500 INTERNAL SERVER ERROR`
+
+**BAD_REQUEST** - `Requests return with 400 BAD REQUEST`
+
+**RANDOM_HAVOC** - `Requests generally succeed, but randomly fail with random HTTP status codes and random delays`
+
 
 Within your `application.properties`:
 
