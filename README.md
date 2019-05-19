@@ -58,3 +58,17 @@ If you are specifying a delayed response - you can specify the number of seconds
 ```properties
 chaos.strategy.delay_response.seconds=60
 ```
+
+## Running ##
+
+* Build project:
+```sh
+mvn clean install
+```
+
+* Create a config directory containing your `application.properties` and take note of the directory name.
+
+* Run application - swapping `<LOCATION_OF_CONFIG>` for the directory from the step before:
+```sh
+java -jar clusterf-chaos-proxy*.jar -Dspring.config.location=<LOCATION_OF_CONFIG>/config/application.properties
+```
