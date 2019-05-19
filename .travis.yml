@@ -7,6 +7,6 @@ script:
 
 deploy:
   provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && mvn docker:build && mvn docker:push
+  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && mvn package && docker:build && mvn docker:push
   on:
     branch: master
