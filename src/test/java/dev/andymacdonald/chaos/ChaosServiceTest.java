@@ -1,7 +1,7 @@
 package dev.andymacdonald.chaos;
 
 import dev.andymacdonald.chaos.strategy.ChaosStrategy;
-import dev.andymacdonald.config.ProxyConfigurationService;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,10 +25,10 @@ public class ChaosServiceTest
     @Test
     public void chaosService_withInitialChaosStrategy_usesConfiguredInitialStrategy()
     {
-        ProxyConfigurationService mockProxyConfigurationService = mock(ProxyConfigurationService.class);
+        ChaosProxyConfigurationService mockChaosProxyConfigurationService = mock(ChaosProxyConfigurationService.class);
         DelayService mockDelayService = mock(DelayService.class);
-        when(mockProxyConfigurationService.getInitialChaosStrategy()).thenReturn(ChaosStrategy.DELAY_RESPONSE);
-        ChaosService chaosService = new ChaosService(mockProxyConfigurationService, mockDelayService);
+        when(mockChaosProxyConfigurationService.getInitialChaosStrategy()).thenReturn(ChaosStrategy.DELAY_RESPONSE);
+        ChaosService chaosService = new ChaosService(mockChaosProxyConfigurationService, mockDelayService);
         assertEquals(ChaosStrategy.DELAY_RESPONSE, chaosService.getActiveChaosStrategy());
     }
 
@@ -36,7 +36,7 @@ public class ChaosServiceTest
     public void chaosService_withNoInitialChaosStrategy_usesDefaultNoChaos()
     {
         DelayService mockDelayService = mock(DelayService.class);
-        ChaosService chaosService = new ChaosService(new ProxyConfigurationService(), mockDelayService);
+        ChaosService chaosService = new ChaosService(new ChaosProxyConfigurationService(), mockDelayService);
         assertEquals(ChaosStrategy.NO_CHAOS, chaosService.getActiveChaosStrategy());
     }
 
@@ -44,7 +44,7 @@ public class ChaosServiceTest
     public void chaosService_setActiveChaosStrategy_overridesActiveStrategy()
     {
         DelayService mockDelayService = mock(DelayService.class);
-        ChaosService chaosService = new ChaosService(new ProxyConfigurationService(), mockDelayService);
+        ChaosService chaosService = new ChaosService(new ChaosProxyConfigurationService(), mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
         assertEquals(ChaosStrategy.DELAY_RESPONSE, chaosService.getActiveChaosStrategy());
     }

@@ -1,6 +1,6 @@
 package dev.andymacdonald.url.build;
 
-import dev.andymacdonald.config.ProxyConfigurationService;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,8 +25,8 @@ public class ProxyTargetUrlBuilderTest
     private final URL expectedURL;
 
     private HttpServletRequest mockServletRequest = mock(HttpServletRequest.class);
-    private ProxyConfigurationService mockProxyConfigurationService = mock(ProxyConfigurationService.class);
-    private ProxyTargetUrlBuilder targetUrlBuilder = new ProxyTargetUrlBuilder(mockProxyConfigurationService);
+    private ChaosProxyConfigurationService mockChaosProxyConfigurationService = mock(ChaosProxyConfigurationService.class);
+    private ProxyTargetUrlBuilder targetUrlBuilder = new ProxyTargetUrlBuilder(mockChaosProxyConfigurationService);
 
     @Before
     public void before()
@@ -55,7 +55,7 @@ public class ProxyTargetUrlBuilderTest
     @Test
     public void buildUrl_withRequestAndPath_returnsBuiltUrl() throws MalformedURLException
     {
-        when(mockProxyConfigurationService.getDestinationServiceHostProtocolAndPort()).thenReturn("https://www.google.com");
+        when(mockChaosProxyConfigurationService.getDestinationServiceHostProtocolAndPort()).thenReturn("https://www.google.com");
         when(mockServletRequest.getServletPath()).thenReturn(this.path);
         URL actual = targetUrlBuilder.buildUrl(mockServletRequest);
         assertEquals(this.expectedURL, actual);

@@ -1,7 +1,7 @@
 package dev.andymacdonald.chaos;
 
 import dev.andymacdonald.chaos.strategy.ChaosStrategy;
-import dev.andymacdonald.config.ProxyConfigurationService;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import lombok.Getter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,16 +25,16 @@ public class ChaosService
     private ResponseEntity<byte[]> chaosResponseEntity;
 
     private Logger log = LoggerFactory.getLogger(ChaosService.class);
-    private ProxyConfigurationService proxyConfigurationService;
+    private ChaosProxyConfigurationService chaosProxyConfigurationService;
     private DelayService delayService;
 
-    public ChaosService(ProxyConfigurationService proxyConfigurationService, DelayService delayService)
+    public ChaosService(ChaosProxyConfigurationService chaosProxyConfigurationService, DelayService delayService)
     {
-        this.proxyConfigurationService = proxyConfigurationService;
+        this.chaosProxyConfigurationService = chaosProxyConfigurationService;
         this.delayService = delayService;
-        if (proxyConfigurationService.getInitialChaosStrategy() != null)
+        if (chaosProxyConfigurationService.getInitialChaosStrategy() != null)
         {
-            this.activeChaosStrategy = proxyConfigurationService.getInitialChaosStrategy();
+            this.activeChaosStrategy = chaosProxyConfigurationService.getInitialChaosStrategy();
         }
         log.info("Initial active chaos strategy: {}", this.activeChaosStrategy);
     }
@@ -54,12 +54,18 @@ public class ChaosService
                 this.chaosStatusCode = HttpServletResponse.SC_BAD_REQUEST;
                 break;
             case DELAY_RESPONSE:
-                delayService.delay(proxyConfigurationService.getDelayTimeSeconds());
+                delayService.delay(chaosProxyConfigurationService.getDelayTimeSeconds());
                 this.chaosStatusCode = responseEntity.getStatusCodeValue();
                 break;
             case RANDOM_HAVOC:
-                delayService.delay((long) new Random().nextInt(proxyConfigurationService.getRandomDelayMaxSeconds()));
+                if (!(new Random().nextInt(11) % 5 == 0))
+                {
+                    long delaySeconds = new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds());
+                    log.info("Delaying response by {} seconds", delaySeconds);
+                    delayService.delay(delaySeconds);
+                }
                 this.chaosStatusCode = getRandomStatusCodeFavouringOk();
+                log.info("Responding with status code: {}", this.chaosStatusCode);
                 break;
 
         }

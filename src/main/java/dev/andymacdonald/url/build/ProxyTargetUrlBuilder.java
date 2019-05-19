@@ -1,6 +1,6 @@
 package dev.andymacdonald.url.build;
 
-import dev.andymacdonald.config.ProxyConfigurationService;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,16 +11,16 @@ import java.util.Optional;
 @Service
 public class ProxyTargetUrlBuilder
 {
-    private ProxyConfigurationService proxyConfigurationService;
+    private ChaosProxyConfigurationService chaosProxyConfigurationService;
 
-    public ProxyTargetUrlBuilder(ProxyConfigurationService proxyConfigurationService)
+    public ProxyTargetUrlBuilder(ChaosProxyConfigurationService chaosProxyConfigurationService)
     {
-        this.proxyConfigurationService = proxyConfigurationService;
+        this.chaosProxyConfigurationService = chaosProxyConfigurationService;
     }
 
 
     public URL buildUrl(HttpServletRequest request) throws MalformedURLException
     {
-        return new URL(proxyConfigurationService.getDestinationServiceHostProtocolAndPort() + Optional.ofNullable(request.getServletPath()).orElse(""));
+        return new URL(chaosProxyConfigurationService.getDestinationServiceHostProtocolAndPort() + Optional.ofNullable(request.getServletPath()).orElse(""));
     }
 }

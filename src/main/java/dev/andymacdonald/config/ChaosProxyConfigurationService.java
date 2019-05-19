@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
-public class ProxyConfigurationService
+public class ChaosProxyConfigurationService
 {
-    private Logger log = LoggerFactory.getLogger(ProxyConfigurationService.class);
+    private Logger log = LoggerFactory.getLogger(ChaosProxyConfigurationService.class);
 
     @Value("${destination.hostProtocolAndPort:https://www.google.com}")
     private String destinationServiceHostProtocolAndPort;
@@ -26,7 +26,7 @@ public class ProxyConfigurationService
     @Value("${chaos.strategy.delay_response.seconds:30}")
     private long delayTimeSeconds;
 
-    @Value("${chaos.strategy.delay_response.random.max.seconds:120}")
+    @Value("${chaos.strategy.delay_response.random.max.seconds:30}")
     private int randomDelayMaxSeconds;
 
     public ChaosStrategy getInitialChaosStrategy()
