@@ -66,7 +66,7 @@ chaos.strategy.delay_response.seconds=60
 mvn clean install
 ```
 
-* Create a config directory containing your `application.properties` and take note of the directory name.
+* Create a `config` directory containing your `application.properties` and take note of the directory name.
 
 * Run application - swapping `<LOCATION_OF_CONFIG>` for the directory from the step before:
 ```sh
