@@ -7,6 +7,6 @@ script:
 
 deploy:
   provider: script
-  script: docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push andymacdonald/clusterf-chaos-proxy:latest
+  script: mvn clean install -DskipTests && docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD && docker push andymacdonald/clusterf-chaos-proxy:latest
   on:
     branch: master
