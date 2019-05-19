@@ -28,7 +28,7 @@ Pull the latest image:
 docker pull andymacdonald/clusterf-chaos-proxy
 ```
 
-Then follow the steps in [Configuration](https://github.com/AndyMacDroo/clusterf-chaos-proxy#configuration) configure the proxy.
+Then follow the steps in [Running](https://github.com/AndyMacDroo/clusterf-chaos-proxy#running) and [Configuration](https://github.com/AndyMacDroo/clusterf-chaos-proxy#configuration) configure the proxy.
 
 ## Building ##
 
