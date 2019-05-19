@@ -34,29 +34,25 @@ server.port=8080 #8080 is the default
 Use this information to configure your _service-under-test_ with relevant config for ClusterF*** in place of your _dependent-destination-service_.
 
 ### Example ###
-For example, you might configure your _service-under-test_ to point to an image service which has been _"ClusterF***'d"_:
 
-**Service Under Test Example Configuration**
-
-If you configure your _service-under-test_ with properties files, they might change like so:
-
-```properties
-image.service=http://10.0.1.150:9898/image-service
-```
-
-Becomes:
-```properties
-image.service=http://localhost:8080/image-service
-```
-
-**Chaos Proxy Application Configuration**
+**Configure Chaos Proxy**
 
 Within ClusterF***, specify `application.properties` to point to your real destination service - e.g.:
 
 ```properties
 destination.hostProtocolAndPort=http://10.0.1.150:9898
 ```
-Specify your chaos strategy `NO_CHAOS, DELAY_RESPONSE, INTERNAL_SERVER_ERROR, BAD_REQUEST`:
+Specify your chaos strategy:
+
+```
+NO_CHAOS - Request is simply passed through
+DELAY_RESPONSE - Requests are delayed but successful (configurable delay)
+INTERNAL_SERVER_ERROR - Requests return with 500 internal server error
+BAD_REQUEST - Requests return with 400 bad request status code
+RANDOM_HAVOC - Requests generally succeed, but randomly fail with random status codes and random delays
+```
+
+Within your `application.properties`:
 
 ```properties
 chaos.strategy=DELAY_RESPONSE
@@ -66,4 +62,17 @@ If you are specifying a delayed response - you can specify the number of seconds
 
 ```properties
 chaos.strategy.delay_response.seconds=60
+```
+
+**Configure Service Under Test**
+
+For example, you might configure your _service-under-test_ to point to a user service which has been _"ClusterF***'d".
+If you configure your _service-under-test_ with properties files, they might change like so:
+
+```properties
+image.service=http://10.0.1.150:9898/user-service
+```
+To:
+```properties
+image.service=http://localhost:8080/user-service
 ```

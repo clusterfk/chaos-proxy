@@ -26,6 +26,9 @@ public class ProxyConfigurationService
     @Value("${chaos.strategy.delay_response.seconds:30}")
     private long delayTimeSeconds;
 
+    @Value("${chaos.strategy.delay_response.random.max.seconds:120}")
+    private int randomDelayMaxSeconds;
+
     public ChaosStrategy getInitialChaosStrategy()
     {
         try
