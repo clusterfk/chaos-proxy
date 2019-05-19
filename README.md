@@ -66,7 +66,7 @@ chaos.strategy.delay_response.seconds=60
 
 **Configure Service Under Test**
 
-For example, you might configure your _service-under-test_ to point to a user service which has been _"ClusterF***'d".
+For example, you might configure your _service-under-test_ to point to a user service which has been _"ClusterF***'d"_.
 If you configure your _service-under-test_ with properties files, they might change like so:
 
 ```properties
