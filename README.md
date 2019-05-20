@@ -137,7 +137,7 @@ For example, you might configure your _service-under-test_ to point to a user se
 If you configure your _service-under-test_ with properties files, they might change like so:
 
 ```properties
-user.service.baseUrl=http://10.0.1.150:9898/user-service
+user-service.baseUrl=http://10.0.1.150:9898/user-service
 ```
 To:
 ```properties
