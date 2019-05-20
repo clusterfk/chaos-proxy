@@ -44,7 +44,7 @@ For running ClusterF*** it is recommended you run using [Docker-Compose](https:/
 version: "3.7"
 services:
   user-service-chaos-proxy:
-    image: clusterf/clusterf-chaos-proxy
+    image: andymacdonald/clusterf-chaos-proxy
     environment:
       JAVA_OPTS: "-Dchaos.strategy=RANDOM_HAVOC -Ddestination.hostProtocolAndPort=http://localhost:8098"
     ports:
@@ -62,13 +62,13 @@ This will allow you to run multiple instances of ClusterF*** - e.g:
 version: "3.7"
 services:
   user-service-chaos-proxy:
-    image: clusterf/clusterf-chaos-proxy
+    image: andymacdonald/clusterf-chaos-proxy
     environment:
       JAVA_OPTS: "-Dchaos.strategy=RANDOM_HAVOC -Ddestination.hostProtocolAndPort=http://10.0.0.231:8098"
     ports:
       - "8080:8080"
   account-service-chaos-proxy:
-    image: clusterf/clusterf-chaos-proxy
+    image: andymacdonald/clusterf-chaos-proxy
     environment:
       JAVA_OPTS: "-Dchaos.strategy=DELAY_RESPONSE -Ddestination.hostProtocolAndPort=http://10.0.1.150:8918"
     ports:
