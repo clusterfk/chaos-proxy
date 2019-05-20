@@ -34,7 +34,7 @@ Then follow the steps in [Running](https://github.com/AndyMacDroo/clusterf-chaos
 
 * Build project and create a new docker image:
 ```sh
-mvn clean install
+mvn clean package && mvn docker:build
 ```
 
 ## Running ##
