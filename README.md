@@ -126,7 +126,7 @@ chaos.strategy=DELAY_RESPONSE
 ```
 **Delay Properties**
 
-If you are specifying a delayed response - you can specify the number of seconds with:
+If you are specifying a delayed response - you can customise the behaviour of the delay with the following properties:
 
 ```properties
 chaos.strategy.delayResponse.fixedPeriod=true       # if number of seconds to delay is constant or random
