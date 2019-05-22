@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Random;
+import java.util.function.Supplier;
 
 @Service
 public class ChaosService
@@ -38,26 +39,32 @@ public class ChaosService
         log.info("Initial active chaos strategy: {}", this.activeChaosStrategy);
     }
 
-    public void processRequestAndApplyChaos(ResponseEntity<byte[]> responseEntity) throws InterruptedException
+    public void processRequestAndApplyChaos(Supplier<ResponseEntity<byte[]>> responseEntity) throws InterruptedException
     {
-        this.chaosResponseEntity = responseEntity;
         switch (activeChaosStrategy)
         {
             case NO_CHAOS:
-                this.chaosStatusCode = responseEntity.getStatusCodeValue();
+                this.chaosResponseEntity = responseEntity.get();
+                this.chaosStatusCode = this.chaosResponseEntity.getStatusCodeValue();
                 break;
             case INTERNAL_SERVER_ERROR:
-                this.chaosStatusCode = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+                int internalServerError = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+                this.chaosResponseEntity = ResponseEntity.status(internalServerError).build();
+                this.chaosStatusCode = internalServerError;
                 break;
             case BAD_REQUEST:
-                this.chaosStatusCode = HttpServletResponse.SC_BAD_REQUEST;
+                int badRequest = HttpServletResponse.SC_BAD_REQUEST;
+                this.chaosResponseEntity = ResponseEntity.status(badRequest).build();
+                this.chaosStatusCode = badRequest;
                 break;
             case DELAY_RESPONSE:
                 delayRequestBasedOnConfiguration();
-                this.chaosStatusCode = responseEntity.getStatusCodeValue();
+                this.chaosResponseEntity = responseEntity.get();
+                this.chaosStatusCode = this.chaosResponseEntity.getStatusCodeValue();
                 break;
             case RANDOM_HAVOC:
                 randomlyDelayRequest();
+                this.chaosResponseEntity = responseEntity.get();
                 this.chaosStatusCode = getRandomStatusCodeFavouringOk();
                 log.info("Responding with status code: {}", this.chaosStatusCode);
                 break;

@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.function.Supplier;
 
 @RestController
 public class ChaosController
@@ -57,10 +58,7 @@ public class ChaosController
         URI uri = buildUri(servletRequest, targetUrl);
         HttpHeaders headers = copyHeaders(servletRequest);
         HttpEntity httpEntity = buildHttpEntity(body, servletRequest, headers);
-        log.info("Method: {}, Path: {}. QueryString: {}",
-                servletRequest.getMethod(),
-                servletRequest.getServletPath(),
-                servletRequest.getQueryString());
+        log.info("Method: {}, Path: {}. QueryString: {}", servletRequest.getMethod(), servletRequest.getServletPath(), servletRequest.getQueryString());
         sendProxyRequest(method, servletResponse, targetUrl, uri, httpEntity);
     }
 
@@ -76,9 +74,7 @@ public class ChaosController
 
     private HttpEntity buildHttpEntity(@RequestBody(required = false) byte[] body, HttpServletRequest servletRequest, HttpHeaders headers) throws IOException
     {
-        return (servletRequest instanceof  MultipartHttpServletRequest) ?
-                buildHttpEntityFromMultipartRequest(servletRequest, headers) :
-                new HttpEntity<>(body, headers);
+        return (servletRequest instanceof MultipartHttpServletRequest) ? buildHttpEntityFromMultipartRequest(servletRequest, headers) : new HttpEntity<>(body, headers);
     }
 
 
@@ -123,15 +119,16 @@ public class ChaosController
     private void sendProxyRequest(HttpMethod method, HttpServletResponse servletResponse, URL targetUrl, URI uri, HttpEntity httpEntity) throws IOException, InterruptedException
     {
         RestTemplate restTemplate = restTemplateBuilder.build();
+        Supplier<ResponseEntity<byte[]>> responseEntitySupplier = () -> restTemplate.exchange(uri, method, httpEntity, byte[].class);
         try
         {
-            chaosService.processRequestAndApplyChaos(restTemplate.exchange(uri, method, httpEntity, byte[].class));
+            chaosService.processRequestAndApplyChaos(responseEntitySupplier);
 
             int responseStatusCode = chaosService.getChaosStatusCode();
             byte[] responseBody = chaosService.getChaosResponseEntity().getBody();
             HttpHeaders responseHeaders = chaosService.getChaosResponseEntity().getHeaders();
 
-            log.debug("{} responded with status code {}", targetUrl, responseStatusCode);
+            log.info("{} responded with status code {}", targetUrl, responseStatusCode);
 
             copyProxyResponseToServletResponse(servletResponse, responseBody, responseHeaders, responseStatusCode);
 
@@ -142,7 +139,7 @@ public class ChaosController
             byte[] responseBody = e.getResponseBodyAsByteArray();
             HttpHeaders proxyResonseHeaders = e.getResponseHeaders();
 
-            log.debug("FAILED: {} responded with status code {}", targetUrl, proxyResponseStatusCode);
+            log.info("FAILED: {} responded with status code {}", targetUrl, proxyResponseStatusCode);
 
             copyProxyResponseToServletResponse(servletResponse, responseBody, proxyResonseHeaders, proxyResponseStatusCode);
         }

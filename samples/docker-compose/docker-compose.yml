@@ -1,8 +1,8 @@
 version: "3.7"
 services:
-  user-service-chaos-proxy:
+  google-browser-chaos-proxy:
     image: andymacdonald/clusterf-chaos-proxy
     environment:
-      JAVA_OPTS: "-Dchaos.strategy=RANDOM_HAVOC -Ddestination.hostProtocolAndPort=http://localhost:8098"
+      JAVA_OPTS: "-Dchaos.strategy=RANDOM_HAVOC -Ddestination.hostProtocolAndPort=https://www.google.coom"
     ports:
       - "8080:8080"
