@@ -19,6 +19,8 @@ _You can find out how your service fairs with ClusterF***_.
 
 * Watch the world burn :fire: :fire: :fire:
 
+* _(Optional) Do something about it._
+
 
 ## Docker Image ##
 
