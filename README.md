@@ -124,11 +124,15 @@ Within your `application.properties` or `JAVA_OPTS`:
 ```properties
 chaos.strategy=DELAY_RESPONSE
 ```
+**Delay Properties**
 
 If you are specifying a delayed response - you can specify the number of seconds with:
 
 ```properties
-chaos.strategy.delay_response.seconds=60
+chaos.strategy.delayResponse.fixedPeriod=true       # if number of seconds to delay is constant or random
+
+chaos.strategy.delayResponse.seconds=60             # if fixed-period delay - number of seconds to delay each requests
+chaos.strategy.delayResponse.random.maxSeconds=120  # if delay is random - maximum amount of time a request can last
 ```
 
 **Configure Service Under Test**

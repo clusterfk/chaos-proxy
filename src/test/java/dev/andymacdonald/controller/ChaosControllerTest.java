@@ -49,7 +49,8 @@ public class ChaosControllerTest
     @Before
     public void before() throws MalformedURLException
     {
-        when(mockTargetBuilder.buildUrl(any(HttpServletRequest.class))).thenReturn(new URL(String.format("http://localhost:%s", WIRE_MOCK_PORT)));
+        when(mockTargetBuilder.buildUrl(any(HttpServletRequest.class)))
+                .thenReturn(new URL(String.format("http://localhost:%s", WIRE_MOCK_PORT)));
     }
 
     @Test

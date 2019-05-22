@@ -6,10 +6,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.slf4j.Logger;
+import org.springframework.http.ResponseEntity;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -47,6 +48,33 @@ public class ChaosServiceTest
         ChaosService chaosService = new ChaosService(new ChaosProxyConfigurationService(), mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
         assertEquals(ChaosStrategy.DELAY_RESPONSE, chaosService.getActiveChaosStrategy());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void chaosService_withFixedDelayStrategyProcess_callsDelayService() throws InterruptedException
+    {
+        DelayService mockDelayService = mock(DelayService.class);
+        Logger mockLogger = mock(Logger.class);
+        ResponseEntity<byte[]> mockResponseEntity = mock(ResponseEntity.class);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true);
+        ChaosService chaosService = new ChaosService(chaosProxyConfigurationService, mockDelayService);
+        chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
+        chaosService.processRequestAndApplyChaos(mockResponseEntity);
+        verify(mockDelayService).delay(chaosProxyConfigurationService.getDelayTimeSeconds());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public void chaosService_withRandomDelayStrategyProcess_callsDelayService() throws InterruptedException
+    {
+        DelayService mockDelayService = mock(DelayService.class);
+        Logger mockLogger = mock(Logger.class);
+        ResponseEntity<byte[]> mockResponseEntity = mock(ResponseEntity.class);
+        ChaosService chaosService = new ChaosService(new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, false), mockDelayService);
+        chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
+        chaosService.processRequestAndApplyChaos(mockResponseEntity);
+        verify(mockDelayService).delay(anyLong());
     }
 
 }

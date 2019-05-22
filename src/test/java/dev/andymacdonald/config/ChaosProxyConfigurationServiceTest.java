@@ -33,7 +33,7 @@ public class ChaosProxyConfigurationServiceTest
     @Test
     public void proxyConfigService_withInvalidChaosStrategy_returnsNullAndLogsWarning()
     {
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "egg", 0, 120);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "egg", 0, 120, false);
         assertNull(chaosProxyConfigurationService.getInitialChaosStrategy());
         verify(mockLogger).warn(anyString());
     }
@@ -41,7 +41,7 @@ public class ChaosProxyConfigurationServiceTest
     @Test
     public void proxyConfigService_withNullChaosStrategy_returnsNullAndLogsWarning()
     {
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", null, 0, 120);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", null, 0, 120, false);
         assertNull(chaosProxyConfigurationService.getInitialChaosStrategy());
         verify(mockLogger).warn(anyString());
     }
@@ -49,15 +49,25 @@ public class ChaosProxyConfigurationServiceTest
     @Test
     public void proxyConfigService_withValidChaosStrategy_returnsNamedChaosStrategy()
     {
-        assertEquals(new ChaosProxyConfigurationService(mockLogger, "", "NO_CHAOS", 0, 120).getInitialChaosStrategy(), ChaosStrategy.NO_CHAOS);
+        assertEquals(new ChaosProxyConfigurationService(
+                mockLogger, "", "NO_CHAOS", 0, 120, false)
+                .getInitialChaosStrategy(), ChaosStrategy.NO_CHAOS);
 
-        assertEquals(new ChaosProxyConfigurationService(mockLogger, "", "INTERNAL_SERVER_ERROR", 0, 120).getInitialChaosStrategy(), ChaosStrategy.INTERNAL_SERVER_ERROR);
+        assertEquals(new ChaosProxyConfigurationService(
+                mockLogger, "", "INTERNAL_SERVER_ERROR", 0, 120, false)
+                .getInitialChaosStrategy(), ChaosStrategy.INTERNAL_SERVER_ERROR);
 
-        assertEquals(new ChaosProxyConfigurationService(mockLogger, "", "BAD_REQUEST", 0, 120).getInitialChaosStrategy(), ChaosStrategy.BAD_REQUEST);
+        assertEquals(new ChaosProxyConfigurationService(
+                mockLogger, "", "BAD_REQUEST", 0, 120, false)
+                .getInitialChaosStrategy(), ChaosStrategy.BAD_REQUEST);
 
-        assertEquals(new ChaosProxyConfigurationService(mockLogger, "", "DELAY_RESPONSE", 0, 120).getInitialChaosStrategy(), ChaosStrategy.DELAY_RESPONSE);
+        assertEquals(new ChaosProxyConfigurationService(
+                mockLogger, "", "DELAY_RESPONSE", 0, 120, false)
+                .getInitialChaosStrategy(), ChaosStrategy.DELAY_RESPONSE);
 
-        assertEquals(new ChaosProxyConfigurationService(mockLogger, "", "RANDOM_HAVOC", 0, 120).getInitialChaosStrategy(), ChaosStrategy.RANDOM_HAVOC);
+        assertEquals(new ChaosProxyConfigurationService(
+                mockLogger, "", "RANDOM_HAVOC", 0, 120, false)
+                .getInitialChaosStrategy(), ChaosStrategy.RANDOM_HAVOC);
 
     }
 

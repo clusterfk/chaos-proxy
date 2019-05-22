@@ -18,7 +18,7 @@ public class ClusterFChaosProxyTest
     private ChaosController controller;
 
     @Test
-    public void contextLoads() throws Exception
+    public void contextLoads()
     {
         assertThat(controller).isNotNull();
     }

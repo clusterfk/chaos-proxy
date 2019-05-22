@@ -23,11 +23,14 @@ public class ChaosProxyConfigurationService
     @Value("${chaos.strategy:NO_CHAOS}")
     private String chaosStrategyString;
 
-    @Value("${chaos.strategy.delay_response.seconds:30}")
+    @Value("${chaos.strategy.delayResponse.seconds:30}")
     private long delayTimeSeconds;
 
-    @Value("${chaos.strategy.delay_response.random.max.seconds:30}")
+    @Value("${chaos.strategy.delayResponse.random.maxSeconds:30}")
     private int randomDelayMaxSeconds;
+
+    @Value("${chaos.strategy.delayResponse.fixedPeriod:false}")
+    private boolean fixedDelayPeriod;
 
     public ChaosStrategy getInitialChaosStrategy()
     {
