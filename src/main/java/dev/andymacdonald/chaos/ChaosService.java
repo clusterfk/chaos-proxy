@@ -27,7 +27,6 @@ public class ChaosService
     private Logger log = LoggerFactory.getLogger(ChaosService.class);
     private ChaosProxyConfigurationService chaosProxyConfigurationService;
     private DelayService delayService;
-
     public ChaosService(ChaosProxyConfigurationService chaosProxyConfigurationService, DelayService delayService)
     {
         this.chaosProxyConfigurationService = chaosProxyConfigurationService;
@@ -54,16 +53,11 @@ public class ChaosService
                 this.chaosStatusCode = HttpServletResponse.SC_BAD_REQUEST;
                 break;
             case DELAY_RESPONSE:
-                delayService.delay(chaosProxyConfigurationService.getDelayTimeSeconds());
+                delayRequestBasedOnConfiguration();
                 this.chaosStatusCode = responseEntity.getStatusCodeValue();
                 break;
             case RANDOM_HAVOC:
-                if (!(new Random().nextInt(11) % 5 == 0))
-                {
-                    long delaySeconds = new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds());
-                    log.info("Delaying response by {} seconds", delaySeconds);
-                    delayService.delay(delaySeconds);
-                }
+                randomlyDelayRequest();
                 this.chaosStatusCode = getRandomStatusCodeFavouringOk();
                 log.info("Responding with status code: {}", this.chaosStatusCode);
                 break;
@@ -72,20 +66,48 @@ public class ChaosService
 
     }
 
-    private int getRandomStatusCodeFavouringOk()
-    {
-        int[] validStatusCodes = {100, 101, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 307, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 500, 501, 502, 503, 504, 505};
-        int randomNumberToSelectOkOrOtherCode = new Random().nextInt(11);
-        if (!(randomNumberToSelectOkOrOtherCode % 5 == 0)) {
-            return HttpServletResponse.SC_OK;
-        }
-        return validStatusCodes[new Random().nextInt(validStatusCodes.length - 1)];
-    }
-
     public void setActiveChaosStrategy(ChaosStrategy chaosStrategy)
     {
         this.activeChaosStrategy = chaosStrategy;
         log.info("Active chaos strategy: {}", this.activeChaosStrategy);
     }
+
+    private void delayRequestBasedOnConfiguration() throws InterruptedException
+    {
+        if (chaosProxyConfigurationService.isFixedDelayPeriod())
+        {
+            delayService.delay(chaosProxyConfigurationService.getDelayTimeSeconds());
+        }
+        else
+        {
+            randomlyDelayRequest();
+        }
+    }
+
+    private void randomlyDelayRequest() throws InterruptedException
+    {
+        if (randomBoolean())
+        {
+            long delaySeconds = new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds());
+            log.info("Delaying response by {} seconds", delaySeconds);
+            delayService.delay(delaySeconds);
+        }
+    }
+
+    private int getRandomStatusCodeFavouringOk()
+    {
+        if (randomBoolean())
+        {
+            return HttpServletResponse.SC_OK;
+        }
+        return VALID_STATUS_CODES[new Random().nextInt(VALID_STATUS_CODES.length - 1)];
+    }
+
+    private static boolean randomBoolean()
+    {
+        return !(Math.random() > 0.75);
+    }
+
+    private static final int[] VALID_STATUS_CODES = new int[]{100, 101, 200, 201, 202, 203, 204, 205, 206, 300, 301, 302, 303, 304, 305, 307, 400, 401, 402, 403, 404, 405, 406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 500, 501, 502, 503, 504, 505};
 
 }

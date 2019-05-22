@@ -4,12 +4,14 @@ import dev.andymacdonald.chaos.strategy.ChaosStrategy;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 @Getter
+@Setter
 @Service
 @AllArgsConstructor
 @NoArgsConstructor

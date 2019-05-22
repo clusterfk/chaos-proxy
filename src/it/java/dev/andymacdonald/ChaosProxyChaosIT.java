@@ -4,6 +4,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import dev.andymacdonald.chaos.ChaosService;
 import dev.andymacdonald.chaos.DelayService;
 import dev.andymacdonald.chaos.strategy.ChaosStrategy;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import dev.andymacdonald.controller.ChaosController;
 import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
 import org.junit.Before;
@@ -52,6 +53,9 @@ public class ChaosProxyChaosIT
     @Autowired
     private ChaosService chaosService;
 
+    @Autowired
+    private ChaosProxyConfigurationService chaosProxyConfigurationService;
+
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(WIRE_MOCK_PORT);
 
@@ -90,10 +94,11 @@ public class ChaosProxyChaosIT
     public void chaosProxy_withRequestAndDelayResponseStrategy_delegatesToDelayServiceThenReturnsResponse() throws Exception
     {
         chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
+        chaosProxyConfigurationService.setFixedDelayPeriod(true);
         doNothing().when(mockDelayService).delay(anyLong());
         stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlMatching("/")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "text/xml").withBody("<response>Content</response>")));
         this.mockMvc.perform(get("/")).andDo(print()).andExpect(status().isOk());
-        verify(mockDelayService).delay(anyLong());
+        verify(mockDelayService).delay(chaosProxyConfigurationService.getDelayTimeSeconds());
     }
 
 }
