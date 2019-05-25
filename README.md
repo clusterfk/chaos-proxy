@@ -1,6 +1,7 @@
 <img src="https://i.ibb.co/WtvPm26/91a16b7b-336f-402f-a78b-d194550da559.png" alt="91a16b7b-336f-402f-a78b-d194550da559" border="0"></a><br />
 # ClusterF*** Chaos Proxy
-[![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy)
+
+[![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy) [![Docker Hub Pulls](https://img.shields.io/docker/pulls/andymacdonald/clusterf-chaos-proxy.svg)](https://hub.docker.com/r/andymacdonald/clusterf-chaos-proxy)
 
 ClusterF** Chaos Proxy is an unreliable HTTP proxy you can rely on; a lightweight tool designed for chaos testing of microservices. 
 
@@ -131,7 +132,7 @@ chaos.strategy=DELAY_RESPONSE
 If you are specifying a delayed response - you can customise the behaviour of the delay with the following properties:
 
 ```properties
-chaos.strategy.delayResponse.fixedPeriod=true       # if number of seconds to delay is constant or random
+chaos.strategy.delayResponse.fixedPeriod=true       # if number of seconds to delay is constant or random (default is false)
 
 chaos.strategy.delayResponse.seconds=60             # if fixed-period delay - number of seconds to delay each requests
 chaos.strategy.delayResponse.random.maxSeconds=120  # if delay is random - maximum amount of time a request can last
