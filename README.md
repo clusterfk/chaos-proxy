@@ -1,22 +1,20 @@
-<img src="https://i.ibb.co/WtvPm26/91a16b7b-336f-402f-a78b-d194550da559.png" alt="91a16b7b-336f-402f-a78b-d194550da559" border="0"></a><br />
-# ClusterF*** Chaos Proxy
+<img src="https://i.ibb.co/NsSNRv3/Webp-net-resizeimage-1.png" alt="91a16b7b-336f-402f-a78b-d194550da559" border="0"></a><br />
+# clusterfk.it Chaos Proxy
 
 [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy) [![Docker Hub Pulls](https://img.shields.io/docker/pulls/andymacdonald/clusterf-chaos-proxy.svg)](https://hub.docker.com/r/andymacdonald/clusterf-chaos-proxy)
 
-ClusterF** Chaos Proxy is an unreliable HTTP proxy you can rely on; a lightweight tool designed for chaos testing of microservices. 
+**clusterfk.it** Chaos Proxy is an unreliable HTTP proxy you can rely on; a lightweight tool designed for chaos testing of microservices. 
 
 ## Why Would I Need This?
 
 I will let you in on a secret: **everything fails eventually**. Micro-services often communicate with other services via REST and HTTP. 
 How does your micro-service cope when the services it depends on inevitably fail?
 
-_You can find out how your service fairs with ClusterF***_.
-
 ## What Do I Do? (TLDR)
 
-* Configure your locally running _service-under-test_ to point to ClusterF*** and configure ClusterF*** to point to your real running _dependent-destination-service_. 
+* Configure your locally running _service-under-test_ to point to the chaos proxy and configure the chaos proxy to point to your real running _dependent-destination-service_. 
 
-* Switch on ClusterF*** and configure a "chaos strategy".
+* Switch on **clusterfk.it** chaos proxy and configure a "chaos strategy".
 
 * Watch the world burn :fire: :fire: :fire:
 
@@ -42,7 +40,7 @@ mvn clean package && mvn docker:build
 
 ## Running ##
 
-For running ClusterF*** it is recommended you run using [Docker-Compose](https://docs.docker.com/compose/). Define a `docker-compose.yml` file such as the below:
+For running **clusterfk.it** Chaos Proxy it is recommended you run using [Docker-Compose](https://docs.docker.com/compose/). Define a `docker-compose.yml` file such as the below:
 ```yaml
 version: "3.7"
 services:
@@ -60,7 +58,7 @@ Then simply run (where the `docker-compose.yml` file is located):
 docker-compose up
 ```
 
-This will allow you to run multiple instances of ClusterF*** - e.g:
+This will allow you to run multiple instances of **clusterfk.it** Chaos Proxy - e.g:
 ```yaml
 version: "3.7"
 services:
@@ -89,19 +87,19 @@ java -jar clusterf-chaos-proxy.jar -Dspring.config.location=<LOCATION_OF_CONFIG>
 
 ## Configuration ##
 
-Specify the port you would like to run **ClusterF***\** on:
+Specify the port you would like to run **clusterfk** chaos proxy on:
 
 ```properties
 server.port=8080 #8080 is the default
 ```
 
-Use this information to configure your _service-under-test_ with relevant config for ClusterF*** in place of your _dependent-destination-service_.
+Use this information to configure your _service-under-test_ with relevant config for **clusterfk** chaos proxy in place of your _dependent-destination-service_.
 
 ### Example ###
 
 **Configure Chaos Proxy**
 
-Within ClusterF***, specify `application.properties` or `JAVA_OPTS` to point to your real destination service - e.g.:
+Within **clusterfk** chaos proxy, specify `application.properties` or `JAVA_OPTS` to point to your real destination service - e.g.:
 
 ```properties
 destination.hostProtocolAndPort=http://10.0.1.150:9898
@@ -140,7 +138,7 @@ chaos.strategy.delayResponse.random.maxSeconds=120  # if delay is random - maxim
 
 **Configure Service Under Test**
 
-For example, you might configure your _service-under-test_ to point to a user service which has been _"ClusterF***'d"_.
+For example, you might configure your _service-under-test_ to point to a user service which has been _"clusterfk'd"_.
 If you configure your _service-under-test_ with properties files, they might change like so:
 
 ```properties
