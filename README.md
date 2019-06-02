@@ -1,9 +1,9 @@
 <img src="https://i.ibb.co/NsSNRv3/Webp-net-resizeimage-1.png" alt="91a16b7b-336f-402f-a78b-d194550da559" border="0"></a><br />
-# clusterfk.it Chaos Proxy
+# ClusterFk Chaos Proxy
 
 [![Build Status](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy.svg?branch=master)](https://travis-ci.org/AndyMacDroo/clusterf-chaos-proxy) [![Docker Hub Pulls](https://img.shields.io/docker/pulls/andymacdonald/clusterf-chaos-proxy.svg)](https://hub.docker.com/r/andymacdonald/clusterf-chaos-proxy)
 
-**clusterfk.it** Chaos Proxy is an unreliable HTTP proxy you can rely on; a lightweight tool designed for chaos testing of microservices. 
+**ClusterFk** Chaos Proxy is an unreliable HTTP proxy you can rely on; a lightweight tool designed for chaos testing of microservices. 
 
 ## Why Would I Need This?
 
@@ -14,7 +14,7 @@ How does your micro-service cope when the services it depends on inevitably fail
 
 * Configure your locally running _service-under-test_ to point to the chaos proxy and configure the chaos proxy to point to your real running _dependent-destination-service_. 
 
-* Switch on **clusterfk.it** chaos proxy and configure a "chaos strategy".
+* Switch on **ClusterFk** chaos proxy and configure a "chaos strategy".
 
 * Watch the world burn :fire: :fire: :fire:
 
@@ -29,7 +29,7 @@ Pull the latest image:
 docker pull andymacdonald/clusterf-chaos-proxy
 ```
 
-Then follow the steps in [Running](https://github.com/AndyMacDroo/clusterf-chaos-proxy#running) and [Configuration](https://github.com/AndyMacDroo/clusterf-chaos-proxy#configuration) to configure the proxy.
+Then follow the steps in [Running](https://github.com/clusterfk/chaos-proxy#running) and [Configuration](https://github.com/clusterfk/chaos-proxy#configuration) to configure the proxy.
 
 ## Building ##
 
@@ -40,7 +40,7 @@ mvn clean package && mvn docker:build
 
 ## Running ##
 
-For running **clusterfk.it** Chaos Proxy it is recommended you run using [Docker-Compose](https://docs.docker.com/compose/). Define a `docker-compose.yml` file such as the below:
+For running **ClusterFk** Chaos Proxy it is recommended you run using [Docker-Compose](https://docs.docker.com/compose/). Define a `docker-compose.yml` file such as the below:
 ```yaml
 version: "3.7"
 services:
@@ -58,7 +58,7 @@ Then simply run (where the `docker-compose.yml` file is located):
 docker-compose up
 ```
 
-This will allow you to run multiple instances of **clusterfk.it** Chaos Proxy - e.g:
+This will allow you to run multiple instances of **ClusterFk** Chaos Proxy - e.g:
 ```yaml
 version: "3.7"
 services:
@@ -93,13 +93,13 @@ Specify the port you would like to run **clusterfk** chaos proxy on:
 server.port=8080 #8080 is the default
 ```
 
-Use this information to configure your _service-under-test_ with relevant config for **clusterfk** chaos proxy in place of your _dependent-destination-service_.
+Use this information to configure your _service-under-test_ with relevant config for **ClusterFk** chaos proxy in place of your _dependent-destination-service_.
 
 ### Example ###
 
 **Configure Chaos Proxy**
 
-Within **clusterfk** chaos proxy, specify `application.properties` or `JAVA_OPTS` to point to your real destination service - e.g.:
+Within **ClusterFk** chaos proxy, specify `application.properties` or `JAVA_OPTS` to point to your real destination service - e.g.:
 
 ```properties
 destination.hostProtocolAndPort=http://10.0.1.150:9898
