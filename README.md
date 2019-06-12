@@ -131,7 +131,8 @@ If you are specifying a delayed response - you can customise the behaviour of th
 
 ```properties
 chaos.strategy.delayResponse.fixedPeriod=true       # if number of seconds to delay is constant or random (default is false)
-
+chaos.tracing.headers=false                         # If this is set to true then 2 headers will be added to the request, 
+                                                     'x-clusterfk-delayed-by' and 'x-clusterfk-status-code'.
 chaos.strategy.delayResponse.seconds=60             # if fixed-period delay - number of seconds to delay each requests
 chaos.strategy.delayResponse.random.maxSeconds=120  # if delay is random - maximum amount of time a request can last
 ```

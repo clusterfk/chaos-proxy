@@ -148,4 +148,15 @@ public class ChaosControllerTest
         this.mockMvc.perform(delete("/")).andDo(print()).andExpect(status().is5xxServerError())
                 .andExpect(content().string(containsString("Error")));
     }
-}
+    @Test
+
+    public void chaosController_withTracingEnabledAddsCorrectHeaders() throws Exception
+    {
+        stubFor(com.github.tomakehurst.wiremock.client.WireMock.delete(urlMatching("/"))
+                .willReturn(aResponse()
+                        .withStatus(500)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Error</response>")));
+        this.mockMvc.perform(delete("/")).andDo(print()).andExpect(status().is5xxServerError())
+                .andExpect(content().string(containsString("Error")));
+    }}

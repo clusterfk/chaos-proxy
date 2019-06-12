@@ -25,6 +25,12 @@ public class ChaosService
     @Getter
     private ResponseEntity<byte[]> chaosResponseEntity;
 
+    @Getter
+    private Long delayedBy = 0L;
+
+    @Getter
+    private boolean tracingHeaders;
+
     private Logger log = LoggerFactory.getLogger(ChaosService.class);
     private ChaosProxyConfigurationService chaosProxyConfigurationService;
     private DelayService delayService;
@@ -36,6 +42,7 @@ public class ChaosService
         {
             this.activeChaosStrategy = chaosProxyConfigurationService.getInitialChaosStrategy();
         }
+        this.tracingHeaders = chaosProxyConfigurationService.isTracingHeaders();
         log.info("Initial active chaos strategy: {}", this.activeChaosStrategy);
     }
 
@@ -58,12 +65,12 @@ public class ChaosService
                 this.chaosStatusCode = badRequest;
                 break;
             case DELAY_RESPONSE:
-                delayRequestBasedOnConfiguration();
+                this.delayedBy = delayRequestBasedOnConfiguration();
                 this.chaosResponseEntity = responseEntity.get();
                 this.chaosStatusCode = this.chaosResponseEntity.getStatusCodeValue();
                 break;
             case RANDOM_HAVOC:
-                randomlyDelayRequest();
+                this.delayedBy = randomlyDelayRequest();
                 this.chaosResponseEntity = responseEntity.get();
                 this.chaosStatusCode = getRandomStatusCodeFavouringOk();
                 log.info("Responding with status code: {}", this.chaosStatusCode);
@@ -79,26 +86,29 @@ public class ChaosService
         log.info("Active chaos strategy: {}", this.activeChaosStrategy);
     }
 
-    private void delayRequestBasedOnConfiguration() throws InterruptedException
+    private Long delayRequestBasedOnConfiguration() throws InterruptedException
     {
         if (chaosProxyConfigurationService.isFixedDelayPeriod())
         {
             delayService.delay(chaosProxyConfigurationService.getDelayTimeSeconds());
+            return chaosProxyConfigurationService.getDelayTimeSeconds();
         }
         else
         {
-            randomlyDelayRequest();
+            return randomlyDelayRequest();
         }
     }
 
-    private void randomlyDelayRequest() throws InterruptedException
+    private Long randomlyDelayRequest() throws InterruptedException
     {
+        Long delaySeconds = 0L;
         if (randomBoolean())
         {
-            long delaySeconds = new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds());
+            delaySeconds =Integer.toUnsignedLong(new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds()));
             log.info("Delaying response by {} seconds", delaySeconds);
             delayService.delay(delaySeconds);
         }
+        return delaySeconds;
     }
 
     private int getRandomStatusCodeFavouringOk()

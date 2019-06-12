@@ -30,8 +30,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
 @WebMvcTest(ChaosController.class)
@@ -101,4 +100,20 @@ public class ChaosProxyChaosIT
         verify(mockDelayService).delay(chaosProxyConfigurationService.getDelayTimeSeconds());
     }
 
+    @Test
+    public void chaosProxy_withRequestAndDelayResponseStrategyAndAddHeaders_addsChaosHeaders() throws Exception
+    {
+        chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
+        chaosProxyConfigurationService.setFixedDelayPeriod(true);
+        chaosProxyConfigurationService.setTracingHeaders(true);
+        doNothing().when(mockDelayService).delay(anyLong());
+        stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlMatching("/")).willReturn(aResponse().withStatus(200).withHeader("Content-Type", "text/xml").withBody("<response>Content</response>")));
+        this.mockMvc.perform(get("/"))
+                .andDo(print()).andExpect(status().isOk())
+                .andExpect(header().string("x-clusterfk-status-code", "200"))
+                .andExpect(header().string("x-clusterfk-delayed-by", "30"));
+        verify(mockDelayService).delay(chaosProxyConfigurationService.getDelayTimeSeconds());
+    }
+
 }
+
