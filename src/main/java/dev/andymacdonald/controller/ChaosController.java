@@ -1,6 +1,7 @@
 package dev.andymacdonald.controller;
 
 
+import com.sun.net.httpserver.Headers;
 import dev.andymacdonald.chaos.ChaosService;
 import dev.andymacdonald.io.MultipartInputStreamFileResource;
 import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
@@ -42,7 +43,9 @@ public class ChaosController
     private ChaosService chaosService;
     private Logger log = LoggerFactory.getLogger(ChaosController.class);
 
-    public ChaosController(RestTemplateBuilder restTemplateBuilder, ProxyTargetUrlBuilder targetUrlBuilder, ChaosService chaosService)
+    public ChaosController(RestTemplateBuilder restTemplateBuilder,
+                           ProxyTargetUrlBuilder targetUrlBuilder,
+                           ChaosService chaosService)
     {
         this.restTemplateBuilder = restTemplateBuilder;
         this.targetUrlBuilder = targetUrlBuilder;
@@ -127,6 +130,14 @@ public class ChaosController
             int responseStatusCode = chaosService.getChaosStatusCode();
             byte[] responseBody = chaosService.getChaosResponseEntity().getBody();
             HttpHeaders responseHeaders = chaosService.getChaosResponseEntity().getHeaders();
+
+            if (chaosService.isTracingHeaders())
+            {
+                chaosService.getChaosResponseEntity().getHeaders();
+                servletResponse.addHeader("x-clusterfk-status-code", Integer.toString(chaosService.getChaosStatusCode()));
+                servletResponse.addHeader("x-clusterfk-delayed-by", Long.toString(chaosService.getDelayedBy()));
+
+            }
 
             log.info("{} responded with status code {}", targetUrl, responseStatusCode);
 

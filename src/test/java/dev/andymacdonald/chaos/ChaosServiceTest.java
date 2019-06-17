@@ -59,7 +59,7 @@ public class ChaosServiceTest
         DelayService mockDelayService = mock(DelayService.class);
         Logger mockLogger = mock(Logger.class);
         Supplier<ResponseEntity<byte[]>> mockResponseEntity = () -> mock(ResponseEntity.class);
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true, false);
         ChaosService chaosService = new ChaosService(chaosProxyConfigurationService, mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
         chaosService.processRequestAndApplyChaos(mockResponseEntity);
@@ -74,7 +74,7 @@ public class ChaosServiceTest
         ResponseEntity<byte[]> mockResponseEntity = mock(ResponseEntity.class);
         Supplier<ResponseEntity<byte[]>> mockResponseEntitySupplier = mock(Supplier.class);
         when(mockResponseEntitySupplier.get()).thenReturn(mockResponseEntity);
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true, false);
         ChaosService chaosService = new ChaosService(chaosProxyConfigurationService, mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.DELAY_RESPONSE);
         chaosService.processRequestAndApplyChaos(mockResponseEntitySupplier);
@@ -88,7 +88,7 @@ public class ChaosServiceTest
         DelayService mockDelayService = mock(DelayService.class);
         Logger mockLogger = mock(Logger.class);
         Supplier<ResponseEntity<byte[]>> mockResponseEntitySupplier = mock(Supplier.class);
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true, false);
         ChaosService chaosService = new ChaosService(chaosProxyConfigurationService, mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.INTERNAL_SERVER_ERROR);
         chaosService.processRequestAndApplyChaos(mockResponseEntitySupplier);
@@ -101,7 +101,7 @@ public class ChaosServiceTest
         DelayService mockDelayService = mock(DelayService.class);
         Logger mockLogger = mock(Logger.class);
         Supplier<ResponseEntity<byte[]>> mockResponseEntitySupplier = mock(Supplier.class);
-        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true);
+        ChaosProxyConfigurationService chaosProxyConfigurationService = new ChaosProxyConfigurationService(mockLogger, "", "", 30, 60, true, false);
         ChaosService chaosService = new ChaosService(chaosProxyConfigurationService, mockDelayService);
         chaosService.setActiveChaosStrategy(ChaosStrategy.BAD_REQUEST);
         chaosService.processRequestAndApplyChaos(mockResponseEntitySupplier);

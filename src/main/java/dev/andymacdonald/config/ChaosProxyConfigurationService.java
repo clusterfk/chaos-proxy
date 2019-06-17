@@ -34,6 +34,9 @@ public class ChaosProxyConfigurationService
     @Value("${chaos.strategy.delayResponse.fixedPeriod:false}")
     private boolean fixedDelayPeriod;
 
+    @Value("${chaos.tracing.headers:true}")
+    private boolean tracingHeaders;
+
     public ChaosStrategy getInitialChaosStrategy()
     {
         try
