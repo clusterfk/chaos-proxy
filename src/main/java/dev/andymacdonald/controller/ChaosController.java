@@ -83,7 +83,7 @@ public class ChaosController
 
     private URI buildUri(HttpServletRequest servletRequest, URL targetUrl)
     {
-        return UriComponentsBuilder.fromUriString(targetUrl.toString()).query(servletRequest.getQueryString()).build(true).toUri();
+        return UriComponentsBuilder.fromUriString(targetUrl.toString()).query(servletRequest.getQueryString()).build().toUri();
     }
 
     private HttpHeaders copyHeaders(HttpServletRequest servletRequest)
