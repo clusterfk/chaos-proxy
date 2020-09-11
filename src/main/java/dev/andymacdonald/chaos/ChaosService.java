@@ -15,25 +15,16 @@ import java.util.function.Supplier;
 @Service
 public class ChaosService
 {
-
     @Getter
     private ChaosStrategy activeChaosStrategy = ChaosStrategy.NO_CHAOS;
 
     @Getter
-    private int chaosStatusCode;
-
-    @Getter
-    private ResponseEntity<byte[]> chaosResponseEntity;
-
-    @Getter
-    private Long delayedBy = 0L;
-
-    @Getter
     private boolean tracingHeaders;
 
-    private Logger log = LoggerFactory.getLogger(ChaosService.class);
-    private ChaosProxyConfigurationService chaosProxyConfigurationService;
-    private DelayService delayService;
+    private final Logger log = LoggerFactory.getLogger(ChaosService.class);
+    private final ChaosProxyConfigurationService chaosProxyConfigurationService;
+    private final DelayService delayService;
+
     public ChaosService(ChaosProxyConfigurationService chaosProxyConfigurationService, DelayService delayService)
     {
         this.chaosProxyConfigurationService = chaosProxyConfigurationService;
@@ -46,41 +37,51 @@ public class ChaosService
         log.info("Initial active chaos strategy: {}", this.activeChaosStrategy);
     }
 
-    public void processRequestAndApplyChaos(Supplier<ResponseEntity<byte[]>> responseEntity) throws InterruptedException
+    public ChaosResult processRequestAndApplyChaos(Supplier<ResponseEntity<byte[]>> responseEntity) throws InterruptedException
     {
-        switch (activeChaosStrategy)
+        int chaosStatusCode;
+        ResponseEntity<byte[]> chaosResponseEntity;
+        Long delayedBy = 0L;
+        ChaosStrategy chaosStrategy = this.activeChaosStrategy;
+
+        switch (chaosStrategy)
         {
             case NO_CHAOS:
-                this.chaosResponseEntity = responseEntity.get();
-                this.chaosStatusCode = this.chaosResponseEntity.getStatusCodeValue();
+                chaosResponseEntity = responseEntity.get();
+                chaosStatusCode = chaosResponseEntity.getStatusCodeValue();
                 break;
             case INTERNAL_SERVER_ERROR:
                 int internalServerError = HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-                this.chaosResponseEntity = ResponseEntity.status(internalServerError).build();
-                this.chaosStatusCode = internalServerError;
+                chaosResponseEntity = ResponseEntity.status(internalServerError).build();
+                chaosStatusCode = internalServerError;
                 break;
             case BAD_REQUEST:
                 int badRequest = HttpServletResponse.SC_BAD_REQUEST;
-                this.chaosResponseEntity = ResponseEntity.status(badRequest).build();
-                this.chaosStatusCode = badRequest;
+                chaosResponseEntity = ResponseEntity.status(badRequest).build();
+                chaosStatusCode = badRequest;
                 break;
             case DELAY_RESPONSE:
-                this.delayedBy = delayRequestBasedOnConfiguration();
-                this.chaosResponseEntity = responseEntity.get();
-                this.chaosStatusCode = this.chaosResponseEntity.getStatusCodeValue();
+                delayedBy = delayRequestBasedOnConfiguration();
+                chaosResponseEntity = responseEntity.get();
+                chaosStatusCode = chaosResponseEntity.getStatusCodeValue();
                 break;
             case RANDOM_HAVOC:
-                this.delayedBy = randomlyDelayRequest();
-                this.chaosResponseEntity = responseEntity.get();
-                this.chaosStatusCode = getRandomStatusCodeFavouringOk();
-                log.info("Responding with status code: {}", this.chaosStatusCode);
+                delayedBy = randomlyDelayRequest();
+                chaosResponseEntity = responseEntity.get();
+                chaosStatusCode = getRandomStatusCodeFavouringOk();
+                log.info("Responding with status code: {}", chaosStatusCode);
                 break;
-
+            default:
+                throw new UnsupportedOperationException("Unsupported chaos strategy: " + chaosStrategy);
         }
-
+        return ChaosResult.builder()
+                          .chaosStatusCode(chaosStatusCode)
+                          .chaosResponseEntity(chaosResponseEntity)
+                          .delayedBy(delayedBy)
+                          .build();
     }
 
-    public void setActiveChaosStrategy(ChaosStrategy chaosStrategy)
+    public synchronized void setActiveChaosStrategy(ChaosStrategy chaosStrategy)
     {
         this.activeChaosStrategy = chaosStrategy;
         log.info("Active chaos strategy: {}", this.activeChaosStrategy);
@@ -104,7 +105,7 @@ public class ChaosService
         Long delaySeconds = 0L;
         if (randomBoolean())
         {
-            delaySeconds =Integer.toUnsignedLong(new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds()));
+            delaySeconds = Integer.toUnsignedLong(new Random().nextInt(chaosProxyConfigurationService.getRandomDelayMaxSeconds()));
             log.info("Delaying response by {} seconds", delaySeconds);
             delayService.delay(delaySeconds);
         }

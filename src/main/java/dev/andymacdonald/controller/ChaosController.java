@@ -1,7 +1,7 @@
 package dev.andymacdonald.controller;
 
 
-import com.sun.net.httpserver.Headers;
+import dev.andymacdonald.chaos.ChaosResult;
 import dev.andymacdonald.chaos.ChaosService;
 import dev.andymacdonald.io.MultipartInputStreamFileResource;
 import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
@@ -40,8 +40,8 @@ public class ChaosController
 
     private final RestTemplateBuilder restTemplateBuilder;
     private final ProxyTargetUrlBuilder targetUrlBuilder;
-    private ChaosService chaosService;
-    private Logger log = LoggerFactory.getLogger(ChaosController.class);
+    private final ChaosService chaosService;
+    private final Logger log = LoggerFactory.getLogger(ChaosController.class);
 
     public ChaosController(RestTemplateBuilder restTemplateBuilder,
                            ProxyTargetUrlBuilder targetUrlBuilder,
@@ -125,17 +125,17 @@ public class ChaosController
         Supplier<ResponseEntity<byte[]>> responseEntitySupplier = () -> restTemplate.exchange(uri, method, httpEntity, byte[].class);
         try
         {
-            chaosService.processRequestAndApplyChaos(responseEntitySupplier);
+            ChaosResult chaos = chaosService.processRequestAndApplyChaos(responseEntitySupplier);
 
-            int responseStatusCode = chaosService.getChaosStatusCode();
-            byte[] responseBody = chaosService.getChaosResponseEntity().getBody();
-            HttpHeaders responseHeaders = chaosService.getChaosResponseEntity().getHeaders();
+            int responseStatusCode = chaos.getChaosStatusCode();
+            byte[] responseBody = chaos.getChaosResponseEntity().getBody();
+            HttpHeaders responseHeaders = chaos.getChaosResponseEntity().getHeaders();
 
             if (chaosService.isTracingHeaders())
             {
-                chaosService.getChaosResponseEntity().getHeaders();
-                servletResponse.addHeader("x-clusterfk-status-code", Integer.toString(chaosService.getChaosStatusCode()));
-                servletResponse.addHeader("x-clusterfk-delayed-by", Long.toString(chaosService.getDelayedBy()));
+                chaos.getChaosResponseEntity().getHeaders();
+                servletResponse.addHeader("x-clusterfk-status-code", Integer.toString(chaos.getChaosStatusCode()));
+                servletResponse.addHeader("x-clusterfk-delayed-by", Long.toString(chaos.getDelayedBy()));
 
             }
 
@@ -148,11 +148,11 @@ public class ChaosController
         {
             int proxyResponseStatusCode = e.getRawStatusCode();
             byte[] responseBody = e.getResponseBodyAsByteArray();
-            HttpHeaders proxyResonseHeaders = e.getResponseHeaders();
+            HttpHeaders proxyResponseHeaders = e.getResponseHeaders();
 
             log.info("FAILED: {} responded with status code {}", targetUrl, proxyResponseStatusCode);
 
-            copyProxyResponseToServletResponse(servletResponse, responseBody, proxyResonseHeaders, proxyResponseStatusCode);
+            copyProxyResponseToServletResponse(servletResponse, responseBody, proxyResponseHeaders, proxyResponseStatusCode);
         }
     }
 
