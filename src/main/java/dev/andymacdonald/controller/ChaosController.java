@@ -56,13 +56,12 @@ public class ChaosController
     @RequestMapping("/**")
     public void proxy(@RequestBody(required = false) byte[] body, HttpMethod method, HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException, InterruptedException
     {
-
         URL targetUrl = buildTargetUrl(servletRequest);
-        URI uri = buildUri(servletRequest, targetUrl);
+        URI uriWithQuery = buildUriWithQuery(servletRequest, targetUrl);
         HttpHeaders headers = copyHeaders(servletRequest);
         HttpEntity httpEntity = buildHttpEntity(body, servletRequest, headers);
-        log.info("Method: {}, Path: {}. QueryString: {}", servletRequest.getMethod(), servletRequest.getServletPath(), servletRequest.getQueryString());
-        sendProxyRequest(method, servletResponse, targetUrl, uri, httpEntity);
+        log.info("Method: {}, Path: {}. QueryString: {}", servletRequest.getMethod(), servletRequest.getRequestURI(), servletRequest.getQueryString());
+        sendProxyRequest(method, servletResponse, targetUrl, uriWithQuery, httpEntity);
     }
 
     private URL buildTargetUrl(HttpServletRequest servletRequest)
@@ -81,7 +80,7 @@ public class ChaosController
     }
 
 
-    private URI buildUri(HttpServletRequest servletRequest, URL targetUrl)
+    private URI buildUriWithQuery(HttpServletRequest servletRequest, URL targetUrl)
     {
         return UriComponentsBuilder.fromUriString(targetUrl.toString()).query(servletRequest.getQueryString()).build(true).toUri();
     }
@@ -119,10 +118,10 @@ public class ChaosController
         return new HttpEntity<>(parts, headers);
     }
 
-    private void sendProxyRequest(HttpMethod method, HttpServletResponse servletResponse, URL targetUrl, URI uri, HttpEntity httpEntity) throws IOException, InterruptedException
+    private void sendProxyRequest(HttpMethod method, HttpServletResponse servletResponse, URL targetUrl, URI uriWithQuery, HttpEntity httpEntity) throws IOException, InterruptedException
     {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        Supplier<ResponseEntity<byte[]>> responseEntitySupplier = () -> restTemplate.exchange(uri, method, httpEntity, byte[].class);
+        Supplier<ResponseEntity<byte[]>> responseEntitySupplier = () -> restTemplate.exchange(uriWithQuery, method, httpEntity, byte[].class);
         try
         {
             ChaosResult chaos = chaosService.processRequestAndApplyChaos(responseEntitySupplier);

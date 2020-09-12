@@ -1,7 +1,8 @@
 package dev.andymacdonald.controller;
 
+import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import dev.andymacdonald.url.build.ProxyTargetUrlBuilder;
+import dev.andymacdonald.config.ChaosProxyConfigurationService;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -12,18 +13,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
-
-import javax.servlet.http.HttpServletRequest;
-import java.net.MalformedURLException;
-import java.net.URL;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -41,16 +38,16 @@ public class ChaosControllerTest
     private MockMvc mockMvc;
 
     @MockBean
-    private ProxyTargetUrlBuilder mockTargetBuilder;
+    private ChaosProxyConfigurationService configurationService;
 
     @Rule
     public WireMockRule wireMockRule = new WireMockRule(WIRE_MOCK_PORT);
 
     @Before
-    public void before() throws MalformedURLException
+    public void before()
     {
-        when(mockTargetBuilder.buildUrl(any(HttpServletRequest.class)))
-                .thenReturn(new URL(String.format("http://localhost:%s", WIRE_MOCK_PORT)));
+        when(configurationService.getDestinationServiceHostProtocolAndPort())
+                .thenReturn(String.format("http://localhost:%s", WIRE_MOCK_PORT));
     }
 
     @Test
@@ -148,8 +145,8 @@ public class ChaosControllerTest
         this.mockMvc.perform(delete("/")).andDo(print()).andExpect(status().is5xxServerError())
                 .andExpect(content().string(containsString("Error")));
     }
-    @Test
 
+    @Test
     public void chaosController_withTracingEnabledAddsCorrectHeaders() throws Exception
     {
         stubFor(com.github.tomakehurst.wiremock.client.WireMock.delete(urlMatching("/"))
@@ -159,4 +156,19 @@ public class ChaosControllerTest
                         .withBody("<response>Error</response>")));
         this.mockMvc.perform(delete("/")).andDo(print()).andExpect(status().is5xxServerError())
                 .andExpect(content().string(containsString("Error")));
-    }}
+    }
+
+    @Test
+    public void chaosController_encodedPathIsRewrittenWithoutChange() throws Exception
+    {
+        String path = "/za%C5%BC%C3%B3%C5%82%C4%87%20g%C4%99%C5%9Bl%C4%85%20ja%C5%BA%C5%84/(%20%CD%A1%C2%B0%20%CD%9C%CA%96%20%CD%A1%C2%B0%20)%E3%81%A4%E2%94%80%E2%94%80%E2%98%86%E3%83%BB%EF%BE%9F%F0%9F%92%A9";
+        stubFor(WireMock.get(urlEqualTo(path))
+                        .willReturn(aResponse().withStatus(200)
+                                               .withHeader("Content-Type", "text/plain")
+                                               .withBody("foo")));
+        this.mockMvc.perform(get(UriComponentsBuilder.fromUriString(path).build(true).toUri()))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(content().string(containsString("foo")));
+    }
+}

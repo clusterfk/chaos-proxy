@@ -21,6 +21,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
 public class ProxyTargetUrlBuilderTest
 {
 
+    private final String contextPath;
     private final String path;
     private final URL expectedURL;
 
@@ -38,16 +39,20 @@ public class ProxyTargetUrlBuilderTest
     public static List<Object[]> balanceRates() throws MalformedURLException
     {
         return Arrays.asList(new Object[][] {
-                {"/images", new URL("https://www.google.com/images")},
-                {"/images/fish", new URL("https://www.google.com/images/fish")},
-                {"/images/fish/egg", new URL("https://www.google.com/images/fish/egg")},
-                {"/images/fish/egg/leg", new URL("https://www.google.com/images/fish/egg/leg")},
-                {"/", new URL("https://www.google.com/")},
-                {"", new URL("https://www.google.com")},
+                {"", "/images", new URL("https://www.google.com/images")},
+                {"", "/images/fish", new URL("https://www.google.com/images/fish")},
+                {"", "/images/fish/egg", new URL("https://www.google.com/images/fish/egg")},
+                {"", "/images/fish/egg/leg", new URL("https://www.google.com/images/fish/egg/leg")},
+                {"", "/", new URL("https://www.google.com/")},
+                {"", "", new URL("https://www.google.com")},
+
+                {"/foo", "/foo/images/fish/egg/leg", new URL("https://www.google.com/images/fish/egg/leg")},
+                {"/bar", "/bar", new URL("https://www.google.com")},
         });
     }
 
-    public ProxyTargetUrlBuilderTest(String path, URL expectedURL) {
+    public ProxyTargetUrlBuilderTest(String contextPath, String path, URL expectedURL) {
+        this.contextPath = contextPath;
         this.path = path;
         this.expectedURL = expectedURL;
     }
@@ -56,7 +61,8 @@ public class ProxyTargetUrlBuilderTest
     public void buildUrl_withRequestAndPath_returnsBuiltUrl() throws MalformedURLException
     {
         when(mockChaosProxyConfigurationService.getDestinationServiceHostProtocolAndPort()).thenReturn("https://www.google.com");
-        when(mockServletRequest.getServletPath()).thenReturn(this.path);
+        when(mockServletRequest.getContextPath()).thenReturn(this.contextPath);
+        when(mockServletRequest.getRequestURI()).thenReturn(this.path);
         URL actual = targetUrlBuilder.buildUrl(mockServletRequest);
         assertEquals(this.expectedURL, actual);
     }
