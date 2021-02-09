@@ -75,7 +75,19 @@ public class ChaosControllerTest
     }
 
     @Test
-    public void chaosController_withPOSTrequest_proxiesToMockRealServiceAndReturns200ResponseIfSuccessful() throws Exception
+    public void chaosController_withGETrequest_withEncodedCurlyBrackets_proxiesToMockRealServiceAndReturns4xx() throws Exception
+    {
+        stubFor(com.github.tomakehurst.wiremock.client.WireMock.get(urlMatching("/%7B%7D"))
+                .willReturn(aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "text/xml")
+                        .withBody("<response>Content</response>")));
+        when(mockTargetBuilder.buildUrl(any())).thenReturn(new URL(new URL("http://google.com"), "/{}"));
+        this.mockMvc.perform(get("/%7B%7D")).andDo(print()).andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    public void chaosController_withPOSTrequest_proxiesToMockRealServiceAndReturns404ResponseIfSuccessful() throws Exception
     {
         stubFor(com.github.tomakehurst.wiremock.client.WireMock.post(urlMatching("/"))
                 .willReturn(aResponse()
